@@ -1,5 +1,15 @@
 import requests
 
+logo = """
+█       ▄   ▄█▄    ▄█ ██▄   ▄█ ██   █     
+█        █  █▀ ▀▄  ██ █  █  ██ █ █  █     
+█     █   █ █   ▀  ██ █   █ ██ █▄▄█ █     
+███▄  █   █ █▄  ▄▀ ▐█ █  █  ▐█ █  █ ███▄  
+    ▀ █▄ ▄█ ▀███▀   ▐ ███▀   ▐    █     ▀ 
+       ▀▀▀                       █        
+                                ▀
+"""
+
 def get_user_friends(user_id):
     url = f"https://friends.roblox.com/v1/users/{user_id}/friends?userSort=0"
     response = requests.get(url)
@@ -17,6 +27,8 @@ def save_user_ids(user_ids):
         for user_id in user_ids:
             file.write(str(user_id) + '\n')
 
+           
+print(logo)        
 # Get user ID input from the user
 user_id = input("Enter the user ID: ")
 
