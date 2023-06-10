@@ -1,32 +1,29 @@
 import requests
 
-def send_friend_requests(cookie, csrf_token, target_id):
-    url = f"https://friends.roblox.com/v1/users/{target_id}/request-friendship"
-    headers = {
-        "Cookie": cookie,
-        "X-CSRF-TOKEN": csrf_token
-    }
-    response = requests.post(url, headers=headers)
+def get_user_friends(user_id):
+    url = f"https://friends.roblox.com/v1/users/{user_id}/friends?userSort=0"
+    response = requests.get(url)
+    
     if response.status_code == 200:
-        print(f"Friend request sent to user ID: {target_id}")
+        data = response.json()
+        friend_ids = [friend['name'] for friend in data['data']]
+        return friend_ids
     else:
-        print(f"Failed to send friend request to user ID: {target_id}")
+        print("Failed to retrieve user friends.")
+        return []
 
-# Get cookie input from the user
-cookie = input("Enter the cookie value: ")
+def save_user_ids(user_ids):
+    with open('users.txt', 'w') as file:
+        for user_id in user_ids:
+            file.write(str(user_id) + '\n')
 
-# Retrieve X-CSRF-TOKEN from Roblox website
-roblox_url = "https://www.roblox.com/home"
-roblox_headers = {
-    "Cookie": cookie
-}
-roblox_response = requests.get(roblox_url, headers=roblox_headers)
-csrf_token = roblox_response.headers.get("X-CSRF-TOKEN")
+# Get user ID input from the user
+user_id = input("Enter the user ID: ")
 
-# Read user IDs from users.txt file
-with open("users.txt", "r") as file:
-    user_ids = file.read().splitlines()
+# Send GET request and retrieve friend IDs
+friend_ids = get_user_friends(user_id)
 
-# Send friend requests for each user ID
-for user_id in user_ids:
-    send_friend_requests(cookie, csrf_token, user_id)
+# Save friend IDs to users.txt
+save_user_ids(friend_ids)
+
+print("Friend IDs saved to users.txt")
